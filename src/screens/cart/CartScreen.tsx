@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,52 @@ import {
   TouchableOpacity,
   Image,
   ListRenderItem,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {useCart} from '../../context/CartContext';
+import {useAuth} from '../../hooks/useAuth';
 import {colors} from '../../constants/colors';
 import {CartItem} from '../../types/cart';
+import {createOrder} from '../../api/orders';
 
 export const CartScreen = () => {
-  const {items, removeFromCart, updateQuantity, total} = useCart();
+  const {items, removeFromCart, updateQuantity, total, clearCart} = useCart();
+  const {user} = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConfirmOrder = async () => {
+    if (!user) {
+      Alert.alert('Error', 'Debes iniciar sesión para realizar un pedido');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const order = {
+        userId: user.id,
+        products: items.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+        })),
+        total,
+        status: 'pending' as const,
+        date: new Date().toISOString().split('T')[0],
+      };
+
+      await createOrder(order);
+      clearCart();
+      Alert.alert('Éxito', 'Tu pedido ha sido confirmado', [{text: 'OK'}]);
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'No se pudo procesar tu pedido. Por favor, intenta nuevamente.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderItem: ListRenderItem<CartItem> = ({item}) => (
     <View style={styles.cartItem}>
@@ -31,7 +69,7 @@ export const CartScreen = () => {
       <View style={styles.productInfo}>
         <Text style={styles.productName}>{item.product.name}</Text>
         <Text style={styles.productPrice}>
-          Bs. {item.product.price.toLocaleString()}
+          Bs. {(item.product.price * item.quantity).toLocaleString()}
         </Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
@@ -80,8 +118,18 @@ export const CartScreen = () => {
           <Text style={styles.totalLabel}>Total:</Text>
           <Text style={styles.totalAmount}>Bs. {total.toLocaleString()}</Text>
         </View>
-        <TouchableOpacity style={styles.checkoutButton}>
-          <Text style={styles.checkoutButtonText}>Confirmar pedido</Text>
+        <TouchableOpacity
+          style={[
+            styles.checkoutButton,
+            isLoading && styles.checkoutButtonDisabled,
+          ]}
+          onPress={handleConfirmOrder}
+          disabled={isLoading || items.length === 0}>
+          {isLoading ? (
+            <ActivityIndicator color={colors.backgroundDark} />
+          ) : (
+            <Text style={styles.checkoutButtonText}>Confirmar pedido</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -186,5 +234,8 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.text,
     fontSize: 16,
+  },
+  checkoutButtonDisabled: {
+    opacity: 0.7,
   },
 });
