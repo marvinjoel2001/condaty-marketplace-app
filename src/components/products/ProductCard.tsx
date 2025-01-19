@@ -7,23 +7,31 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {Product} from '../../types/product';
 import {colors} from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Feather';
 
 interface ProductCardProps {
   product: Product;
-  onPress: (product: Product) => void;
 }
 
 const {width} = Dimensions.get('window');
 const cardWidth = width / 2 - 24; // 2 columnas con padding
 
-export const ProductCard = ({product, onPress}: ProductCardProps) => {
+export const ProductCard = ({product}: ProductCardProps) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate('ProductDetail', {
+      productId: product.id,
+    });
+  };
+
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => onPress(product)}
+      onPress={handlePress}
       activeOpacity={0.7}>
       <View style={styles.imageContainer}>
         {product.images && product.images.length > 0 ? (
@@ -60,7 +68,6 @@ export const ProductCard = ({product, onPress}: ProductCardProps) => {
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     width: cardWidth,
