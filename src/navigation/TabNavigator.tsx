@@ -7,6 +7,8 @@ import {colors} from '../constants/colors';
 import {useCart} from '../context/CartContext';
 import {View, Text} from 'react-native';
 import {CartIconProps} from '../types/cartprops';
+import {OrdersScreen} from '../screens/orders/OrdersScreen';
+import {ProfileScreen} from '../screens/profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -73,6 +75,24 @@ export const TabNavigator = () => {
         component={CartScreen}
         options={{
           tabBarIcon: ({color, size}) => <CartIcon color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="Pedidos"
+        component={OrdersScreen}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <Icon name="shopping-bag" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Perfil"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <Icon name="user" size={size} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>

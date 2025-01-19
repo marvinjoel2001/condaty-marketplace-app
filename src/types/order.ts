@@ -1,4 +1,4 @@
-export interface OrderItem {
+export interface OrderProduct {
   productId: number;
   quantity: number;
 }
@@ -6,7 +6,7 @@ export interface OrderItem {
 export interface Order {
   id?: number;
   userId: number;
-  products: OrderItem[];
+  products: OrderProduct[];
   total: number;
   status: 'pending' | 'completed' | 'cancelled';
   date: string;
