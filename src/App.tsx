@@ -2,7 +2,8 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import {AuthProvider} from './context/AuthContext';
 import {colors} from './constants/colors';
-import LoginScreen from './screens/auth/LoginScreen';
+
+import {AppNavigator} from './navigation/AppNavigator';
 
 function App(): JSX.Element {
   return (
@@ -12,7 +13,7 @@ function App(): JSX.Element {
         backgroundColor={colors.background}
         translucent
       />
-      <LoginScreen />
+      <AppNavigator />
     </AuthProvider>
   );
 }

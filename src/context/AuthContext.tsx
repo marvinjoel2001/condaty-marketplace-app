@@ -26,12 +26,16 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
 
   async function loadStoredData() {
     try {
-      const storedUser = await AsyncStorage.getItem('@auth_user');
-      if (storedUser) {
+      const [storedUser, token] = await Promise.all([
+        AsyncStorage.getItem('@auth_user'),
+        AsyncStorage.getItem('@auth_token'),
+      ]);
+
+      if (storedUser && token) {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.error('Error loading stored user:', error);
+      console.error('Error loading stored data:', error);
     } finally {
       setLoading(false);
     }
@@ -42,18 +46,22 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
       const response = await authApi.login(credentials);
       setUser(response.user);
       await AsyncStorage.setItem('@auth_user', JSON.stringify(response.user));
+      await AsyncStorage.setItem('@auth_token', response.token);
     } catch (error) {
+      console.error('Error signing in:', error);
       throw error;
     }
   };
 
   const signOut = async () => {
     try {
-      await authApi.logout();
       setUser(null);
-      await AsyncStorage.removeItem('@auth_user');
+      await Promise.all([
+        AsyncStorage.removeItem('@auth_user'),
+        AsyncStorage.removeItem('@auth_token'),
+      ]);
     } catch (error) {
-      throw error;
+      console.error('Error signing out:', error);
     }
   };
 
