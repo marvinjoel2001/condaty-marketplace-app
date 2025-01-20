@@ -1,12 +1,10 @@
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigate } from '../navigation/navigationRef';
-import { Alert } from 'react-native';
-
+import {navigate} from '../navigation/navigationRef';
+import {Alert} from 'react-native';
 
 const api = axios.create({
-  baseURL: 'http://10.0.2.2:3001',
+  baseURL: 'https://1066-2800-cd0-4304-e000-e794-e0c8-b7b8-dbb4.ngrok-free.app',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -49,8 +47,6 @@ api.interceptors.response.use(
 
       // Navegar al login
       navigate('Login');
-
-     
       Alert.alert('Sesión expirada', 'Por favor, inicia sesión nuevamente');
     }
     return Promise.reject(error);
