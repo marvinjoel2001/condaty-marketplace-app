@@ -2,6 +2,12 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "kotlin-android"
 
+
+project.ext.react = [
+    enableHermes: true,  // Ya deberías tener esto
+    bundleInRelease: true,  // Asegura que se incluya el bundle
+    bundleInDebug: true     // Para el APK de debug
+]
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -88,6 +94,12 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            storeFile file('my-release-key.keystore')
+            storePassword 'tu_contraseña_del_store'
+            keyAlias 'my-key-alias'
+            keyPassword 'tu_contraseña_de_key'
         }
     }
     buildTypes {

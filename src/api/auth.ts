@@ -15,7 +15,7 @@ export const login = async (
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
     }
-    throw new Error('Error en el inicio de sesión');
+    throw new Error('Error en el inicio de sesión2');
   }
 };
 

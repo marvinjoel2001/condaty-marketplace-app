@@ -4,7 +4,7 @@ import {navigate} from '../navigation/navigationRef';
 import {Alert} from 'react-native';
 
 const api = axios.create({
-  baseURL: 'https://1066-2800-cd0-4304-e000-e794-e0c8-b7b8-dbb4.ngrok-free.app',
+  baseURL: 'http://144.217.242.126:3000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
